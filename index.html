@@ -8,6 +8,7 @@
     <script src="jquery.js"></script>
     <script src='spectrum.js'></script>
     <link rel='stylesheet' href='spectrum.css' />
+    <link rel="stylesheet" href="cikonss.css" />
     <script src="/socket.io/socket.io.js"></script>
     <link rel="apple-touch-icon" href="/icon/"/>
 </head>
@@ -33,8 +34,14 @@
                 <div class="flexable" id="securityIndicator">
                     <div id="security">Security</div>
                 </div>
-                <div class="flexable" id="volumeContainer">
-                    <div id="volume">Vol: 10 / 50</div>
+                <div class="flexable">
+                    <div id="volume" class="volume">Vol: 10 / 50</div>
+                </div>
+                <div class="flexable">
+                    <div id="subVolume" class="volume">Vol: 10 / 50</div>
+                </div>
+                <div class="flexable">
+                    <div id="audioSource" class="volume">Audio Source: USB</div>
                 </div>
             </div>
         </div>
@@ -43,10 +50,10 @@
                 <div class="midSectionButtons" onclick="lightControlsButtonPress()">Light Controls</div>
             </div>
             <div class="flexable midSectionButtonDivs">
-                <div class="midSectionButtons" onclick="addPopOverEntry('Notice','Control of the VSC and traction control<br /> system not implemented yet.<br />Sorry.')">VSC / Traction Control</div>
+                <div class="midSectionButtons" onclick="vsctracButtonPress()">VSC / Traction Control</div>
             </div>
             <div class="flexable midSectionButtonDivs">
-                <div class="midSectionButtons" onclick="addPopOverEntry('Notice','Audio System control has<br />not been implemented yet.<br />Sorry.')">Audio Control</div>
+                <div class="midSectionButtons" onclick="AudioControlButtonPress()">Audio Control</div>
             </div>
             <div class="flexable midSectionButtonDivs">
                 <div class="midSectionButtons" onclick="systemStatusButtonPress()">System Status</div>
@@ -74,18 +81,18 @@
                     <div id="feetDefrost" class="airButtons2" onclick="AirDestinationButtonPress(190)"></div>
                     <div  id="defrost" class="airButtons2" onclick="AirDestinationButtonPress(255)"></div>
                 </div>
-                <input type="range" min="0" max="255" class="airDestinationSlider" id="airDestinationSliderID" oninput="AirDestinationButtonPress(this.value)">
+                <input type="range" min="0" max="255" class="airDestinationSlider" id="airDestinationSliderID" oninput="AirDestinationButtonPress(Number(this.value))">
             </div>
             <div class="flexable">
                 <div class="fanDivs">FAN</div>
-                <input type="range" min="0" max="4" value="0" class="fanSlider" id="fanSliderID" oninput="updateFanSpeed(this.value)">
+                <input type="range" min="0" max="4" value="0" class="fanSlider" id="fanSliderID" oninput="updateFanSpeed(Number(this.value))">
                 <div id="fanSpeedNumber" class="fanDivs">Off</div>
             </div>
             <div class="flexable">
                 <div id="cool">
                     <a onclick="clickCool()">Cool</a>
                 </div>
-                <input type="range" min="0" max="255" class="tempSlider" id="tempSliderID" oninput="updateHotCool(this.value)">
+                <input type="range" min="0" max="255" class="tempSlider" id="tempSliderID" oninput="updateHotCool(Number(this.value))">
                 <div id="hot">
                     <a onclick="clickHot()">Hot</a>
                 </div>
@@ -111,18 +118,18 @@
                     <div id="grillButton" class="lightingControlsDivButtonsDivs disabled" onclick="(CarLights_lighting_button(4,this))">Grill</div>
                 </div>
                 <div class="flexable">
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">preset 1</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">preset 2</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">preset 3</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">preset 4</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">preset 5</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(0,this))">preset 1</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(1,this))">preset 2</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(2,this))">preset 3</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(3,this))">preset 4</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(4,this))">preset 5</div>
                 </div>
                 <div class="flexable">
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">pattern 2</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">pattern 3</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">pattern 4</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">pattern 5</div>
-                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern">pattern 6</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(5,this))">pattern 2</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(6,this))">pattern 3</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(7,this))">pattern 4</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(8,this))">pattern 5</div>
+                    <div class="lightingControlsDivButtonsDivs notSelectedPresetPattern" onclick="(CarLights_PatternPreset_button(9,this))">pattern 6</div>
                 </div>
             </div>
             <div style='padding:0px;width:700px;height:575px;' id='lightingControlsDivColorPicker'>
@@ -391,7 +398,7 @@ body{
     width: 100%;
 }
 
-#volume{
+.volume{
     width: 100%;
     font-size: 180%;
 }
@@ -428,6 +435,19 @@ body{
     font-size: 90%;
 }
 
+.VSCTracControlsDivButtonsDivs{
+    margin: auto;
+    border: 1px solid white;
+    border-radius: 12px;
+    padding:5px;
+    width:100px;
+    height: 50px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 90%;
+}
+
 .disabled{
     color: #444;
 }
@@ -435,6 +455,16 @@ body{
 .notSelectedPresetPattern{
     color: #444;
 }
+
+.audioControlData{
+    width: 100px;
+    text-align: center;
+}
+.audioControlArrow{
+    width: 90px;
+    padding-left: 10px;
+}
+
 /********************************************************************************************************************************************************************************/
 /*****   code for play, pause, next, back buttons originally ganked from http://cikonss.zzapwebdesign.com/   *******/
 /*  removed to optimized code since these styles were never used */
@@ -607,7 +637,7 @@ input[type=range].airDestinationSlider::-webkit-slider-thumb {
 .hidden{display:none;}
 </style>
 <script>
-var dataObj = JSON.parse('{"OBDIIdata":{"speed":1,"tach":2753},"HeatAC":{"fan":0,"hotCool":125,"dest":0,"reCirc":false,"AC":false,"rearDef":false},"Indicators":{"on":false,"off":false,"security":false,"volume":15},"CarLights":{"colorRGB":{"r":0,"g":0,"b":0,"a":0},"lighting":{"fog":false,"groundLights":false,"groundBlinkers":false,"grill":false,"halos":false}},"VSCTrac":{"Trac":false,"VSC":false},"SystemStatus":{"volts":{"vehicle":12,"v12":12,"v5":5,"v3.3":3.3,"vBatt":3.6},"modules":{"grill":0,"groundLights":1}}}');
+var dataObj = JSON.parse('{"OBDIIdata":{"speed":1,"tach":2753},"HeatAC":{"fan":0,"hotCool":125,"dest":0,"reCirc":false,"AC":false,"rearDef":false},"Indicators":{"on":false,"off":false,"security":false,"volume":15},"CarLights":{"colorRGB":{"r":0,"g":0,"b":0,"a":0},"lighting":{"fog":false,"groundLights":false,"groundBlinkers":false,"grill":false,"halos":false}},"VSCTrac":{"Trac":false,"VSC":false},"SystemStatus":{"volts":{"vehicle":12,"v12":12,"v5":5,"v33":3.3,"vBatt":3.6},"modules":{"grill":0,"groundLights":1}}}');
 var popOverEntryObj = JSON.parse('{"popOverEntry":[{"popOverTitleText":"index","popOvermessageText":"index"}]}');
 var socket = io();
 var systemStatusOverlayActive = false;
@@ -633,6 +663,10 @@ socket.on('connect', function () {
         dataObj.CarLights = obj;
         assignClassNamesToLightingButtonFrom_dataObj();
     });
+    socket.on('AUDIO',function(obj){
+        dataObj.AudioSystem = obj;
+        updateIndicatorElementsOfPageWithNewData();
+    });
     var c = popOverEntryObj.popOverEntry.length - 1;
     if(popOverEntryObj.popOverEntry[c].popOvermessageText == 'Socket is no longer connected to server!'){
         closePopOver();
@@ -645,6 +679,7 @@ socket.on('connect', function () {
         dataObj.SystemStatus = obj;
         if(systemStatusOverlayActive){
             socket.emit('getSystemStats','n');
+            updateSystemStats();
         }
     });
 });
@@ -654,16 +689,19 @@ function updateHeatACElementsOfPageWithNewData(){
     document.getElementById("tempSliderID").value = dataObj.HeatAC.hotCool;
     document.getElementById("fanSliderID").value = dataObj.HeatAC.fan;
     document.getElementById("fanSpeedNumber").innerHTML = (dataObj.HeatAC.fan!=0)?dataObj.HeatAC.fan:"Off";
-    document.getElementById("reCircButtonDiv").className = dataObj.HeatAC.recirc?"":"airControlButtonActive";
-    document.getElementById("ACbuttonDiv").className = dataObj.HeatAC.AC?"":"airControlButtonActive";
-    document.getElementById("rearDefrostDiv").className = dataObj.HeatAC.rearDef?"":"airControlButtonActive";
+    document.getElementById("reCircButtonDiv").className = dataObj.HeatAC.reCirc?"airControlButtonActive":"";
+    document.getElementById("ACbuttonDiv").className = dataObj.HeatAC.AC?"airControlButtonActive":"";
+    document.getElementById("rearDefrostDiv").className = dataObj.HeatAC.rearDef?"airControlButtonActive":"";
 }
 
 function updateIndicatorElementsOfPageWithNewData(){
     document.getElementById("passengerAirbagOn").style.color = dataObj.Indicators.on?"white":"";
     document.getElementById("passengerAirbagOff").style.color = dataObj.Indicators.off?"white":"";
     document.getElementById("security").style.color = dataObj.Indicators.security?"white":"";
-    document.getElementById("volume").innerHTML = "Vol: "+dataObj.Indicators.volume+" / 50";
+    document.getElementById("volume").innerHTML = "Vol: "+dataObj.AudioSystem.MasterVol+" / 50";
+    document.getElementById("subVolume").innerHTML = "Sub Vol: "+dataObj.AudioSystem.SubVol+" / 50";
+    var sources = {0:"USB",1:"BlueTooth",2:"Other"};
+    document.getElementById("audioSource").innerHTML = "Audio Source: "+sources[dataObj.AudioSystem.Source];
 }
 
 function AirDestinationButtonPress(id) {
@@ -675,12 +713,12 @@ function AirDestinationButtonPress(id) {
 
 function clickHot() {
     document.getElementById("tempSliderID").stepUp(14);
-    dataObj.HeatAC.hotCool = document.getElementById("tempSliderID").value;
+    dataObj.HeatAC.hotCool = Number(document.getElementById("tempSliderID").value);
     sendHeatACUpdate();
 }
 function clickCool() {
     document.getElementById("tempSliderID").stepDown(14);
-    dataObj.HeatAC.hotCool = document.getElementById("tempSliderID").value;
+    dataObj.HeatAC.hotCool = Number(document.getElementById("tempSliderID").value);
     sendHeatACUpdate();
 }
 
@@ -690,7 +728,7 @@ var rearDefrost = 0;
 var fanSpeed = 0;
 
 function ReCircToggle() {
-    document.getElementById("reCircButtonDiv").className = dataObj.HeatAC.recirc?(dataObj.HeatAC.recirc=false,""):(dataObj.HeatAC.recirc=true,"airControlButtonActive");
+    document.getElementById("reCircButtonDiv").className = dataObj.HeatAC.reCirc?(dataObj.HeatAC.reCirc=false,""):(dataObj.HeatAC.reCirc=true,"airControlButtonActive");
     sendHeatACUpdate();
 }
 
@@ -721,6 +759,14 @@ function sendHeatACUpdate(){
 
 function sendLightingUpdate(){
     socket.emit('lightingUpdate',dataObj.CarLights);
+}
+
+function sendVSCTracUpdate(){
+    socket.emit('VSCTrac',dataObj.VSCTrac);
+}
+
+function sendAudioSystemUpdate(){
+    socket.emit('AudioSystem',dataObj.AudioSystem);
 }
 
 function CarLights_lighting_button(index,element){
@@ -799,6 +845,8 @@ function CarLights_PatternPreset_button(index,element){
         //error
         break;
     }
+    dataObj.CarLights.pattern = index;
+    sendLightingUpdate();
 }
 
 function assignClassNamesToLightingButtonFrom_dataObj(){
@@ -833,7 +881,13 @@ function buildPopOver(titleText,newText){
     c = "calc(50vw - "+a+"px)";
     popOverElmnt.style.right = c;
     var b = popOverEntryObj.popOverEntry.length - 1;
-    if(popOverEntryObj.popOverEntry[b].popOverTitleText!='Lighting Control'){
+    /*if((popOverEntryObj.popOverEntry[b].popOverTitleText!='Lighting Control')&&(popOverEntryObj.popOverEntry[b].popOverTitleText!='VSC and Traction Control')){
+        document.getElementById('popOver').addEventListener("click",closePopOver);
+    } else {
+        document.getElementById('popOver').removeEventListener("click",closePopOver);
+    }*/
+
+    if((popOverEntryObj.popOverEntry[b].popOverTitleText=='System Status')||(popOverEntryObj.popOverEntry[b].popOverTitleText=='Clock Detail')||(popOverEntryObj.popOverEntry[b].popOverTitleText=='none')){
         document.getElementById('popOver').addEventListener("click",closePopOver);
     } else {
         document.getElementById('popOver').removeEventListener("click",closePopOver);
@@ -880,6 +934,7 @@ function lightControlsButtonPress(){
                 //console.log(color);
                 dataObj.CarLights.colorRGB = color.toRgb();
                 //console.log(dataObj.CarLights.colorRGB);
+                sendLightingUpdate();
             },
             show: function () {
             },
@@ -918,11 +973,112 @@ function systemStatusButtonPress(){
 }
 
 function updateSystemStats(){
-    document.getElementById('vehVolts').innerHTML = '34';
-    document.getElementById('12Volts').innerHTML = '43';
-    document.getElementById('5Volts').innerHTML = '12';
-    document.getElementById('3v3Volts').innerHTML = '5';
-    document.getElementById('battVolts').innerHTML = '8';
+    document.getElementById('vehVolts').innerHTML = dataObj.SystemStatus.volts.vehicle;
+    document.getElementById('12Volts').innerHTML = dataObj.SystemStatus.volts.v12;
+    document.getElementById('5Volts').innerHTML = dataObj.SystemStatus.volts.v5;
+    document.getElementById('3v3Volts').innerHTML = dataObj.SystemStatus.volts.v33;
+    document.getElementById('battVolts').innerHTML = dataObj.SystemStatus.volts.vBatt;
+}
+
+function vsctracButtonPress(){
+    var c = "<div style='padding:0px;height:150px;display:flex;flex-direction:column;'>";
+    c += '<div class="flexable">';
+    c += '<div id="VSCbutton" class="VSCTracControlsDivButtonsDivs';
+    c += dataObj.VSCTrac.VSC?" enabled":" disabled";
+    c += '" onclick="(VSCTracbuttontoggles(0,this))">VSC</div>';
+    c += '<div id="TracButton" class="VSCTracControlsDivButtonsDivs';
+    c += dataObj.VSCTrac.Trac?" enabled":" disabled";
+    c += '" onclick="(VSCTracbuttontoggles(1,this))">Traction Control</div>';
+    c += '</div>';
+    c += '</div>';
+    c += "<div style='padding:10px;'><div style='margin:auto;border:1px solid white;width:50px;padding:10px;' onclick='closePopOver()'>close</div></div>";
+    addPopOverEntry('VSC and Traction Control', c);
+}
+
+function VSCTracbuttontoggles(index,element){
+    var c = false;
+    switch(index){
+        case 0:
+        // fog lights Button
+        c = dataObj.VSCTrac.VSC;
+        $(element).removeClass(c?"enabled":"disabled").addClass(c?"disabled":"enabled");
+        dataObj.VSCTrac.VSC = c?false:true;
+        break;
+        case 1:
+        // ground lights button
+        c = dataObj.VSCTrac.Trac;
+        $(element).removeClass(c?"enabled":"disabled").addClass(c?"disabled":"enabled");
+        dataObj.VSCTrac.Trac = c?false:true;
+        break;
+        default:
+        // error
+        break;
+    }
+    sendVSCTracUpdate();
+}
+
+function AudioControlButtonPress(){
+    var sources = {0:"USB",1:"BlueTooth",2:"Other"};
+    var c = "<div style='padding:0px;height:250px;display:flex;flex-direction:column;'>";
+    c += '<div class="flexable">';
+    c += '<div class="audioControlData">Volume</div>';
+    c += '<div class="audioControlData">Sub Vol</div>';
+    c += '<div class="audioControlData">Source</div>';
+    c += '</div>';
+    c += '<div class="flexable">';
+    c += '<div class="audioControlArrow" onclick="(AudioSystemControlButtonPress(0,this))"><span class="icon icon-large"><span class="icon-arrowUp"></span></span></div>';
+    c += '<div class="audioControlArrow" onclick="(AudioSystemControlButtonPress(1,this))"><span class="icon icon-large"><span class="icon-arrowUp"></span></span></div>';
+    c += '<div class="audioControlArrow" onclick="(AudioSystemControlButtonPress(2,this))"><span class="icon icon-large"><span class="icon-arrowUp"></span></span></div>';
+    c += '</div>';
+    c += '<div class="flexable">';
+    c += '<div class="audioControlData" id="volumePopup">';
+    c += dataObj.AudioSystem.MasterVol;
+    c += ' / 50</div>';
+    c += '<div class="audioControlData" id="subVolumePopup">';
+    c += dataObj.AudioSystem.SubVol;
+    c += ' / 50</div>';
+    c += '<div class="audioControlData" id="audioSourcePopup">';
+    c += sources[dataObj.AudioSystem.Source];
+    c += '</div>';
+    c += '</div>';
+    c += '<div class="flexable">';
+    c += '<div class="audioControlArrow"><span class="icon icon-large" onclick="(AudioSystemControlButtonPress(3,this))"><span class="icon-arrowDown"></span></span></div>';
+    c += '<div class="audioControlArrow"><span class="icon icon-large" onclick="(AudioSystemControlButtonPress(4,this))"><span class="icon-arrowDown"></span></span></div>';
+    c += '<div class="audioControlArrow"><span class="icon icon-large" onclick="(AudioSystemControlButtonPress(5,this))"><span class="icon-arrowDown"></span></span></div>';
+    c += '</div>';
+    c += '</div>';
+    c += "<div style='padding:10px;'><div style='margin:auto;border:1px solid white;width:50px;padding:10px;margin-top:20px;' onclick='closePopOver()'>close</div></div>";
+    addPopOverEntry('Audio System',c);
+}
+
+function AudioSystemControlButtonPress(index,element){
+    switch (index) {
+        case 0:
+            dataObj.AudioSystem.MasterVol = dataObj.AudioSystem.MasterVol==50?50:dataObj.AudioSystem.MasterVol+1;
+        break;
+        case 1:
+            dataObj.AudioSystem.SubVol = dataObj.AudioSystem.SubVol==50?50:dataObj.AudioSystem.SubVol+1;
+        break;
+        case 2:
+            dataObj.AudioSystem.Source = dataObj.AudioSystem.Source==2?0:dataObj.AudioSystem.Source+1;
+        break;
+        case 3:
+            dataObj.AudioSystem.MasterVol = dataObj.AudioSystem.MasterVol==0?0:dataObj.AudioSystem.MasterVol-1;
+        break;
+        case 4:
+            dataObj.AudioSystem.SubVol = dataObj.AudioSystem.SubVol==0?0:dataObj.AudioSystem.SubVol-1;
+        break;
+        case 5:
+            dataObj.AudioSystem.Source = dataObj.AudioSystem.Source==0?2:dataObj.AudioSystem.Source-1;
+        break;
+        default:
+        break;
+    }
+    var sources = {0:"USB",1:"BlueTooth",2:"Other"};
+    document.getElementById("audioSourcePopup").innerHTML = sources[dataObj.AudioSystem.Source];
+    document.getElementById("volumePopup").innerHTML = dataObj.AudioSystem.MasterVol+" / 50";
+    document.getElementById("subVolumePopup").innerHTML = dataObj.AudioSystem.SubVol+" / 50";
+    sendAudioSystemUpdate();
 }
 
 setInterval(function(){clockUpdate()},1000);
